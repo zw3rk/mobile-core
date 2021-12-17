@@ -19,6 +19,8 @@
         packages = {
           "lib:mobile-core" = drv.mobile-core.components.library;
         };
+        # build all packages in hydra.
+        hydraJobs = packages;
       }
     );
 }
