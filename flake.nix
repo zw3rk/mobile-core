@@ -1,10 +1,10 @@
 {
   description = "Package build for mobile-core";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.haskellNix.url = "github:input-output-hk/haskell.nix/master";
+  inputs.haskellNix.url = "github:input-output-hk/haskell.nix/angerman/aarch64";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   outputs = { self, haskellNix, nixpkgs, flake-utils }:
-    let systems = ["x86_64-linux" "x86_64-darwin" ]; in # "aarch64-linux" "aarch64-darwin"]; in
+    let systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]; in
     flake-utils.lib.eachSystem systems (system:
       let pkgs = haskellNix.legacyPackages.${system}; in
       let drv = pkgs.haskell-nix.project {
