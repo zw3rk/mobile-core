@@ -37,12 +37,12 @@
                     "ghcjs:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = ghcjs; }).pkgs).mobile-core.components.library;
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.library;
                 };
-                "aarch64-linux" = rec {
+                "aarch64-linux" = {
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library;
-                    "musl64:lib:mobile-core:smallAddressSpace" = "musl64:lib:mobile-core".override { smallAddressSpace = true; };
+                    "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override { smallAddressSpace = true; };
                 };
                 "aarch64-darwin" = {
-                    "lib:mobile-core:smallAddressSpace" = (drv pkgs).mobile-core.components.library.override { smallAddressSpace = true; };
+                    "lib:mobile-core:smallAddressSpace" = (drv pkgs).mobile-core.components.library.override { smallAddressSpace = true; enableShared = false; postInstall = ''tree $out''; };
                 };
             }.${system} or {});
         # build all packages in hydra.
