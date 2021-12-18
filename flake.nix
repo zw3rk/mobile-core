@@ -20,6 +20,16 @@
           src = ./.;
         };
       }; in
+      # let mkPkg = drv: {
+      # # drv.override { postInstall = ''
+      #     # mkdir -p $out/
+      #     # zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-cardano-node-${cardano-node-info.rev or "unknown"}.zip cardano-node
+
+      #     # mkdir -p $out/nix-support
+      #     # echo "file binary-dist \"$(echo $out/*.zip)\"" \
+      #     #   > $out/nix-support/hydra-build-products
+      # # ''; }
+      # };
       rec {
         packages = {
           "lib:mobile-core" = (drv pkgs).mobile-core.components.library;
@@ -27,8 +37,12 @@
                     "ghcjs:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = ghcjs; }).pkgs).mobile-core.components.library;
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.library;
                 };
-                "aarch64-linux" = {
+                "aarch64-linux" = rec {
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library;
+                    "musl64:lib:mobile-core:smallAddressSpace" = "musl64:lib:mobile-core".override { smallAddressSpace = true; };
+                };
+                "aarch64-darwin" = {
+                    "lib:mobile-core:smallAddressSpace" = (drv pkgs).mobile-core.components.library.override { smallAddressSpace = true; };
                 };
             }.${system} or {});
         # build all packages in hydra.
