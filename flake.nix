@@ -44,6 +44,7 @@
                 "aarch64-darwin" = {
                     "lib:mobile-core:smallAddressSpace:static" = (drv pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
+                      ghcOptions = "-staticlib";
                       postInstall = ''
                         ${pkgs.tree}/bin/tree $out
                         mkdir -p $out/nix-support
