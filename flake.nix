@@ -63,7 +63,7 @@
                 };
                 "aarch64-darwin" = {
                     "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "lib:gmp:static" = gmp6.override { withStatic = true; };
+                    "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
                     "lib:mobile-core:smallAddressSpace:static" = (drv pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
                       ghcOptions = [ "-staticlib" ];
