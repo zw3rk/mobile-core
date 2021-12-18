@@ -44,17 +44,21 @@
                 "aarch64-darwin" = {
                     "lib:mobile-core:smallAddressSpace:static" = (drv pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
-                      ghcOptions = [ "-staticlib" "-o $out/_pkg/lib.a" ];
-                      preBuild = ''
-                        mkdir -p $out/_pkg
-                      '';
+                      ghcOptions = [ "-staticlib" ];
                       postInstall = ''
                         ${pkgs.tree}/bin/tree $out
-                        mkdir -p $out/nix-support
+                        mkdir -p $out/_pkg
+                        # copy over includes, we might want those, but maybe not.
                         cp -r $out/lib/*/*/include $out/_pkg/
+                        # find the libHS...ghc-X.Y.Z.a static library; this is the
+                        # rolled up one with all dependencies included.
+                        find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
+                        
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
                         rm -fR $out/_pkg
+
+                        mkdir -p $out/nix-support
                         echo "file binary-dist \"$(echo $out/*.zip)\"" \
                            > $out/nix-support/hydra-build-products
                       '';
