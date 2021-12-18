@@ -44,14 +44,17 @@
                 "aarch64-darwin" = {
                     "lib:mobile-core:smallAddressSpace:static" = (drv pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
-                      ghcOptions = [ "-staticlib" ];
+                      ghcOptions = [ "-staticlib" "-o $out/_pkg/lib.a" ];
+                      preBuild = ''
+                        mkdir -p $out/_pkg
+                      '';
                       postInstall = ''
                         ${pkgs.tree}/bin/tree $out
                         mkdir -p $out/nix-support
-                        mkdir -p $out/_pkg
-                        cp -r $out/lib/*/*/{include,*.a} $out/_pkg/
+                        cp -r $out/lib/*/*/include $out/_pkg/
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                        rm -fR $out/_pkg
                         echo "file binary-dist \"$(echo $out/*.zip)\"" \
                            > $out/nix-support/hydra-build-products
                       '';
