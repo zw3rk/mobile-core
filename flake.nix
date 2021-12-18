@@ -42,7 +42,7 @@
                     "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override { smallAddressSpace = true; };
                 };
                 "aarch64-darwin" = {
-                    "lib:mobile-core:smallAddressSpace" = (drv pkgs).mobile-core.components.library.override { smallAddressSpace = true; enableShared = false; postInstall = ''tree $out''; };
+                    "lib:mobile-core:smallAddressSpace" = (drv pkgs).mobile-core.components.library.override { smallAddressSpace = true; enableShared = false; postInstall = ''${pkgs.tree}/bin/tree $out''; };
                 };
             }.${system} or {});
         # build all packages in hydra.
