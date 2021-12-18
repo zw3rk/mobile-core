@@ -39,7 +39,27 @@
                 };
                 "aarch64-linux" = {
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library;
-                    "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override { smallAddressSpace = true; };
+                    "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override {
+                      smallAddressSpace = true; enableShared = false;
+                      ghcOptions = [ "-staticlib" ];
+                      postInstall = ''
+                        ${pkgs.tree}/bin/tree $out
+                        mkdir -p $out/_pkg
+                        # copy over includes, we might want those, but maybe not.
+                        cp -r $out/lib/*/*/include $out/_pkg/
+                        # find the libHS...ghc-X.Y.Z.a static library; this is the
+                        # rolled up one with all dependencies included.
+                        find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
+
+                        ${pkgs.tree}/bin/tree $out/_pkg
+                        (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                        rm -fR $out/_pkg
+
+                        mkdir -p $out/nix-support
+                        echo "file binary-dist \"$(echo $out/*.zip)\"" \
+                           > $out/nix-support/hydra-build-products
+                      '';
+                    };
                 };
                 "aarch64-darwin" = {
                     "lib:mobile-core:smallAddressSpace:static" = (drv pkgs).mobile-core.components.library.override {
@@ -53,7 +73,7 @@
                         # find the libHS...ghc-X.Y.Z.a static library; this is the
                         # rolled up one with all dependencies included.
                         find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
-                        
+
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
                         rm -fR $out/_pkg
