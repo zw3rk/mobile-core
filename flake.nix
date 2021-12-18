@@ -50,7 +50,7 @@
                         mkdir -p $out/_pkg
                         cp -r $out/lib/*/*/{include,*.a} $out/_pkg/
                         ${pkgs.tree}/bin/tree $out/_pkg
-                        (cd $out/_pkg; zip -r -9 $out/pkg.zip *)
+                        (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
                         echo "file binary-dist \"$(echo $out/*.zip)\"" \
                            > $out/nix-support/hydra-build-products
                       '';
