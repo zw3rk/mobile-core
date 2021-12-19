@@ -38,6 +38,8 @@
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.library;
                 };
                 "aarch64-linux" = {
+                    "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library;
                     "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
@@ -51,6 +53,9 @@
                         # rolled up one with all dependencies included.
                         find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
 
+                        find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
                         rm -fR $out/_pkg
