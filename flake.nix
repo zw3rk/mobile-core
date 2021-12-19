@@ -36,7 +36,7 @@
         } // ({ "x86_64-linux" = {
                     "ghcjs:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = ghcjs; }).pkgs).mobile-core.components.library;
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.library;
-                    "musl64:exe:mobile-core:mobile-core" = pkgs.pkgsCross.musl64.pkgs.mobile-core.components.exes.mobile-core;
+                    "musl64:exe:mobile-core:mobile-core" = (drv pkgs.pkgsCross.musl64).mobile-core.components.exes.mobile-core;
                     # "musl64:exe:mobile-core:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.exes.mobile-core;
                     "musl64:exe:mobile-core:mobile-core-c" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.exes.mobile-core-c;
                 };
