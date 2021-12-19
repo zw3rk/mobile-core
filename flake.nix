@@ -4,12 +4,6 @@
   inputs.haskellNix.url = "github:input-output-hk/haskell.nix/angerman/aarch64";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   outputs = { self, haskellNix, nixpkgs, flake-utils }:
-    let
-        ghcjs = { config = "js-unknown-ghcjs"; };
-        x86_64-musl64 = { config = "x86_64-unknown-linux-musl"; };
-        aarch64-musl64 = { config = "aarch64-unknown-linux-musl"; };
-        systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-    in
     flake-utils.lib.eachSystem systems (system:
       let pkgs = haskellNix.legacyPackages.${system}; in
       let drv = pkgs': pkgs'.haskell-nix.project {
@@ -33,23 +27,25 @@
       rec {
         packages = {
           "lib:mobile-core" = (drv pkgs).mobile-core.components.library;
-        } // ({ "x86_64-linux" = {
-                    "ghcjs:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = ghcjs; }).pkgs).mobile-core.components.library;
-                    "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.library;
-                    "musl64:exe:mobile-core:mobile-core" = (drv pkgs.pkgsCross.musl64).mobile-core.components.exes.mobile-core;
-                    # "musl64:exe:mobile-core:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.exes.mobile-core;
-                    "musl64:exe:mobile-core:mobile-core-c" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.exes.mobile-core-c;
+          "exe:mobile-core:mobile-core" = (drv pkgs).mobile-core.components.exes.mobile-core;
+          "exe:mobile-core:mobile-core-c" = (drv pkgs).mobile-core.components.exes.mobile-core-c;
+          "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+          "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
+        } // ({ "x86_64-linux" = let muslPkgs = pkgs.pkgsCross.musl64; in {
+                    "ghcjs:lib:mobile-core" = (drv pkgs.pkgsCross.ghcjs).mobile-core.components.library;
+                    "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    "musl64:lib:gmp:static" = muslPkgs.gmp6.override { withStatic = true; };
+                    "musl64:lib:mobile-core" = (drv muslPkgs).mobile-core.components.library;
+                    "musl64:exe:mobile-core:mobile-core" = (drv muslPkgs).mobile-core.components.exes.mobile-core;
+                    "musl64:exe:mobile-core:mobile-core-c" = (drv muslPkgs).mobile-core.components.exes.mobile-core-c;
                 };
-                "aarch64-linux" = {
-                    "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
-                    
-                    "musl64:exe:mobile-core:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.exes.mobile-core;
-                    "musl64:exe:mobile-core:mobile-core-c" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.exes.mobile-core-c;
-                    "musl64:lib:ffi:static" = (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "musl64:lib:gmp:static" = (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.gmp6.override { withStatic = true; };
-                    "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library;
-                    "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override {
+                "aarch64-linux" = let muslPkgs = pkgs.pkgsCross.aarch64-multiplatform-musl; in {
+                    "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    "musl64:lib:gmp:static" = muslPkgs.gmp6.override { withStatic = true; };
+                    "musl64:lib:mobile-core" = (drv muslPkgs).mobile-core.components.library;
+                    "musl64:exe:mobile-core:mobile-core" = (drv muslPkgs).mobile-core.components.exes.mobile-core;
+                    "musl64:exe:mobile-core:mobile-core-c" = (drv muslPkgs).mobile-core.components.exes.mobile-core-c;
+                    "musl64:lib:mobile-core:smallAddressSpace" = (drv muslPkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
                       ghcOptions = [ "-staticlib" ];
                       postInstall = ''
@@ -61,8 +57,8 @@
                         # rolled up one with all dependencies included.
                         find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
 
-                        find ${(haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
-                        find ${(haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${muslPkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
@@ -88,6 +84,9 @@
                         # find the libHS...ghc-X.Y.Z.a static library; this is the
                         # rolled up one with all dependencies included.
                         find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
+
+                        find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
 
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
