@@ -36,12 +36,17 @@
         } // ({ "x86_64-linux" = {
                     "ghcjs:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = ghcjs; }).pkgs).mobile-core.components.library;
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.library;
+                    "musl64:exe:mobile-core:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.exes.mobile-core;
+                    "musl64:exe:mobile-core:mobile-core-c" = (drv (haskellNix.internal.compat { inherit system; crossSystem = x86_64-musl64; }).pkgs).mobile-core.components.exes.mobile-core-c;
                 };
                 "aarch64-linux" = {
-                    "exe:mobile-core:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.exes.mobile-core;
-                    "exe:mobile-core:mobile-core-c" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.exes.mobile-core-c;
-                    "lib:ffi:static" = (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "lib:gmp:static" = (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.gmp6.override { withStatic = true; };
+                    "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
+                    
+                    "musl64:exe:mobile-core:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.exes.mobile-core;
+                    "musl64:exe:mobile-core:mobile-core-c" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.exes.mobile-core-c;
+                    "musl64:lib:ffi:static" = (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    "musl64:lib:gmp:static" = (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs.gmp6.override { withStatic = true; };
                     "musl64:lib:mobile-core" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library;
                     "musl64:lib:mobile-core:smallAddressSpace" = (drv (haskellNix.internal.compat { inherit system; crossSystem = aarch64-musl64; }).pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
