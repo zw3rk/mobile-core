@@ -84,6 +84,7 @@
 
                         find ${muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         find ${muslPkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${muslPkgs.musl}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
@@ -139,6 +140,7 @@
 
                         find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${muslPkgs.musl}/lib -name "*.a" -exec cp {} $out/_pkg \;
 
                         ${pkgs.tree}/bin/tree $out/_pkg
                         (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
