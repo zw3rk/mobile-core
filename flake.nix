@@ -6,7 +6,7 @@
   outputs = { self, haskellNix, nixpkgs, flake-utils }:
     let systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]; in
     flake-utils.lib.eachSystem systems (system:
-      let pkgs = haskellNix.legacyPackages-2105.${system}; in
+      let pkgs = haskellNix.legacyPackages2105.${system}; in
       let drv = pkgs': pkgs'.haskell-nix.project {
         compiler-nix-name = "ghc8107";
         index-state = "2020-12-15T00:00:00Z";
