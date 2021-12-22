@@ -147,16 +147,17 @@
         "nixpkgs-2003": "nixpkgs-2003",
         "nixpkgs-2105": "nixpkgs-2105",
         "nixpkgs-2111": "nixpkgs-2111",
+        "nixpkgs-2111-patched": "nixpkgs-2111-patched",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "old-ghc-nix": "old-ghc-nix",
         "stackage": "stackage"
       },
       "locked": {
-        "lastModified": 1640161163,
-        "narHash": "sha256-VFeZrQh4Oj2Pyr8BRVtGS54Rh2mMy4VUQTSLVfxfPBw=",
+        "lastModified": 1640167200,
+        "narHash": "sha256-yUgFzAg//eGxL73H/BD8RdBznngd60BzZh+v2FvOw9A=",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "fa5dd3d1d3120baecc8fd70ecccae666cd0b5494",
+        "rev": "578845d0ab7db3d0aadea736243e7e09384ed4fc",
         "type": "github"
       },
       "original": {
@@ -200,16 +201,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1639996107,
-        "narHash": "sha256-qEnXR2HwECUbV9UiOus1HN6FKhj3fEpxefKbZVRk9w0=",
-        "owner": "NixOS",
+        "lastModified": 1640167006,
+        "narHash": "sha256-GrQJjpNxG6NdN/DDOxVevVgT+23kWjd/Mzsj4Fn1x2E=",
+        "owner": "angerman",
         "repo": "nixpkgs",
-        "rev": "a0899f066572bb498ea3b4939d27743fd3e78364",
+        "rev": "548cbebec880c675f885311050ca4157e7996efa",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-21.05",
+        "owner": "angerman",
+        "ref": "patch-1",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -258,6 +259,22 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixpkgs-21.11-darwin",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-2111-patched": {
+      "locked": {
+        "lastModified": 1640167006,
+        "narHash": "sha256-GrQJjpNxG6NdN/DDOxVevVgT+23kWjd/Mzsj4Fn1x2E=",
+        "owner": "angerman",
+        "repo": "nixpkgs",
+        "rev": "548cbebec880c675f885311050ca4157e7996efa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "angerman",
+        "ref": "patch-1",
         "repo": "nixpkgs",
         "type": "github"
       }
