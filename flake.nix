@@ -93,6 +93,7 @@
 
                     "aarch64-android:lib:ffi:static" = androidPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
                     "aarch64-android:lib:gmp:static" = androidPkgs.gmp6.override { withStatic = true; };
+                    "aarch64-android:lib:gmp:static" = androidPkgs.iconv; 
                     "aarch64-android:lib:mobile-core" = (drv androidPkgs).mobile-core.components.library;
                     "aarch64-android:exe:mobile-core:mobile-core" = (drv androidPkgs).mobile-core.components.exes.mobile-core;
                     "aarch64-android:exe:mobile-core:mobile-core-c" = (drv androidPkgs).mobile-core.components.exes.mobile-core-c;
