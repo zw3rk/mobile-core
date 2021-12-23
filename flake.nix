@@ -59,8 +59,8 @@
         } // ({ "x86_64-linux" = let muslPkgs = pkgs.pkgsCross.musl64; androidPkgs = pkgs.pkgsCross.aarch64-android; in {
                     "ghcjs:lib:mobile-core" = (drv pkgs.pkgsCross.ghcjs).mobile-core.components.library;
 
-                    "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "musl64:lib:gmp:static" = muslPkgs.gmp6.override { withStatic = true; };
+                    # "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    # "musl64:lib:gmp:static" = muslPkgs.gmp6.override { withStatic = true; };
                     "musl64:lib:mobile-core" = (drv muslPkgs).mobile-core.components.library;
                     "musl64:exe:mobile-core:mobile-core" = (drv muslPkgs).mobile-core.components.exes.mobile-core;
                     "musl64:exe:mobile-core:mobile-core-c" = (drv muslPkgs).mobile-core.components.exes.mobile-core-c;
@@ -91,9 +91,9 @@
                     };
 
 
-                    "aarch64-android:lib:ffi:static" = androidPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "aarch64-android:lib:gmp:static" = androidPkgs.gmp6.override { withStatic = true; };
-                    "aarch64-android:lib:iconv:static" = androidPkgs.libiconv.override { enableStatic = true; };
+                    # "aarch64-android:lib:ffi:static" = androidPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    # "aarch64-android:lib:gmp:static" = androidPkgs.gmp6.override { withStatic = true; };
+                    # "aarch64-android:lib:iconv:static" = androidPkgs.libiconv.override { enableStatic = true; };
                     "aarch64-android:lib:mobile-core" = (drv androidPkgs).mobile-core.components.library;
                     "aarch64-android:exe:mobile-core:mobile-core" = (drv androidPkgs).mobile-core.components.exes.mobile-core;
                     "aarch64-android:exe:mobile-core:mobile-core-c" = (drv androidPkgs).mobile-core.components.exes.mobile-core-c;
@@ -125,8 +125,8 @@
 
                 };
                 "aarch64-linux" = let muslPkgs = pkgs.pkgsCross.aarch64-multiplatform-musl; androidPkgs = pkgs.pkgsCross.aarch64-android; in {
-                    "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "musl64:lib:gmp:static" = muslPkgs.gmp6.override { withStatic = true; };
+                    # "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    # "musl64:lib:gmp:static" = muslPkgs.gmp6.override { withStatic = true; };
                     "musl64:lib:mobile-core" = (drv muslPkgs).mobile-core.components.library;
                     "musl64:exe:mobile-core:mobile-core" = (drv muslPkgs).mobile-core.components.exes.mobile-core;
                     "musl64:exe:mobile-core:mobile-core-c" = (drv muslPkgs).mobile-core.components.exes.mobile-core-c;
@@ -184,8 +184,8 @@
                     # };
                 };
                 "aarch64-darwin" = {
-                    "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
-                    "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
+                    # "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
+                    # "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
                     "lib:mobile-core:smallAddressSpace:static" = (drv pkgs).mobile-core.components.library.override {
                       smallAddressSpace = true; enableShared = false;
                       ghcOptions = [ "-staticlib" ];
