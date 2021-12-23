@@ -52,6 +52,16 @@
                   > $out/nix-support/hydra-build-products
             '';
           };
+          "exe:mobile-core:mobile-core" = (drv pkgs).mobile-core.components.exes.mobile-core.override {
+            postInstall = ''
+              ${pkgs.tree}/bin/tree $out
+            '';
+          };
+          "exe:mobile-core:mobile-core-c" = (drv pkgs).mobile-core.components.exes.mobile-core-c.override {
+            postInstall = ''
+              ${pkgs.tree}/bin/tree $out
+            '';
+          };
           # "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
           # "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
         } // ({ "x86_64-linux" = let muslPkgs = pkgs.pkgsCross.musl64; androidPkgs = pkgs.pkgsCross.aarch64-android; in {
