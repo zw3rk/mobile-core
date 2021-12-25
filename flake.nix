@@ -119,6 +119,7 @@
 
                         find ${androidPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         find ${androidPkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${androidPkgs.libiconv.override { enableStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         find ${androidPkgs.stdenv.cc.libc}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         
                         ${pkgs.tree}/bin/tree $out/_pkg
