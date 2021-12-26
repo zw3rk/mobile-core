@@ -1,3 +1,4 @@
+
 {
   description = "Package build for mobile-core";
   inputs.nixpkgs.url = "github:angerman/nixpkgs/patch-1"; # based on 21.11
@@ -14,6 +15,21 @@
           name = "mobile-core";
           src = ./.;
         };
+        # This will package up all *.a in $out into a pkg.zip that can
+        # be downloaded from hydra.
+        withHydraLibPkg = pkg: pkg.overrideAttrs (old: {
+          postInstall = ''
+            mkdir -p $out/_pkg
+            find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
+
+            (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+            rm -fR $out/_pkg
+
+            mkdir -p $out/nix-support
+            echo "file binary-dist \"$(echo $out/*.zip)\"" \
+                > $out/nix-support/hydra-build-products
+          '';
+        });
       }; in
       # let mkPkg = drv: {
       # # drv.override { postInstall = ''
@@ -64,7 +80,28 @@
           };
           # "lib:ffi:static" = pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
           # "lib:gmp:static" = pkgs.gmp6.override { withStatic = true; };
-        } // ({ "x86_64-linux" = let muslPkgs = pkgs.pkgsCross.musl64; androidPkgs = pkgs.pkgsCross.aarch64-android; in {
+        } // ({ "x86_64-linux" = let muslPkgs = pkgs.pkgsCross.musl64;
+                                     androidPkgs = pkgs.pkgsCross.aarch64-android;
+                                     # For some reason building libiconv with nixpgks android setup produces
+                                     # LANGINFO_CODESET to be found, which is not compatible with android sdk 23;
+                                     # so we'll patch up iconv to not include that.
+                                     androidIconv = androidPkgs.libiconv.override { enableStatic = true; }).overrideAttrs (old: {
+                                      postConfigure = ''
+                                        echo "#undef HAVE_LANGINFO_CODESET" >> libcharset/config.h
+                                        echo "#undef HAVE_LANGINFO_CODESET" >> lib/config.h
+                                      '';
+                                     });
+                                     # Similarly to icovn, for reasons beyond my current knowledge, nixpkgs andorid
+                                     # toolchain makes configure believe we have MEMFD_CREATE, which we don't in
+                                     # sdk 23.
+                                     androidFFI = androidPkgs.libffi.overrideAttrs (old: {
+                                      dontDisableStatic = true;
+                                      hardeningDisable = [ "fortify" ];
+                                      postConfigure = ''
+                                        echo "#undef HAVE_MEMFD_CREATE" >> aarch64-unknown-linux-android/fficonfig.h
+                                      '';
+                                     });
+                in {
                     "ghcjs:lib:mobile-core" = (drv pkgs.pkgsCross.ghcjs).mobile-core.components.library;
 
                     # "musl64:lib:ffi:static" = muslPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; });
@@ -99,42 +136,9 @@
                     };
 
 
-                    "aarch64-android:lib:ffi:static" = androidPkgs.libffi.overrideAttrs (old: {
-                      dontDisableStatic = true;
-                      hardeningDisable = [ "fortify" ];
-                      postConfigure = ''
-                        echo "#undef HAVE_MEMFD_CREATE" >> aarch64-unknown-linux-android/fficonfig.h
-                      '';
-                      postInstall = ''
-                        mkdir -p $out/_pkg
-                        find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
-
-                        (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
-                        rm -fR $out/_pkg
-
-                        mkdir -p $out/nix-support
-                        echo "file binary-dist \"$(echo $out/*.zip)\"" \
-                           > $out/nix-support/hydra-build-products
-                      '';
-                    });
+                    "aarch64-android:lib:ffi:static" = withHydraLibPkg androidFFI;
                     # "aarch64-android:lib:gmp:static" = androidPkgs.gmp6.override { withStatic = true; };
-                    "aarch64-android:lib:iconv:static" = (androidPkgs.libiconv.override { enableStatic = true; }).overrideAttrs (old: {
-                      postConfigure = ''
-                        echo "#undef HAVE_LANGINFO_CODESET" >> libcharset/config.h
-                        echo "#undef HAVE_LANGINFO_CODESET" >> lib/config.h
-                      '';
-                      postInstall = ''
-                        mkdir -p $out/_pkg
-                        find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
-
-                        (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
-                        rm -fR $out/_pkg
-
-                        mkdir -p $out/nix-support
-                        echo "file binary-dist \"$(echo $out/*.zip)\"" \
-                           > $out/nix-support/hydra-build-products
-                      '';
-                    });
+                    "aarch64-android:lib:iconv:static" = withHydraLibPkg androidIconv;
                     "aarch64-android:lib:mobile-core" = (drv androidPkgs).mobile-core.components.library;
                     "aarch64-android:exe:mobile-core:mobile-core" = (drv androidPkgs).mobile-core.components.exes.mobile-core;
                     "aarch64-android:exe:mobile-core:mobile-core-c" = (drv androidPkgs).mobile-core.components.exes.mobile-core-c;
@@ -150,9 +154,9 @@
                         # rolled up one with all dependencies included.
                         find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
 
-                        find ${androidPkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${androidFFI}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         find ${androidPkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
-                        find ${androidPkgs.libiconv.override { enableStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                        find ${androidIconv}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         find ${androidPkgs.stdenv.cc.libc}/lib -name "*.a" -exec cp {} $out/_pkg \;
                         
                         ${pkgs.tree}/bin/tree $out/_pkg
