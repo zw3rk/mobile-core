@@ -15,7 +15,7 @@
           name = "mobile-core";
           src = ./.;
         };
-      }); in
+      }; in
       # This will package up all *.a in $out into a pkg.zip that can
       # be downloaded from hydra.
       let withHydraLibPkg = pkg: pkg.overrideAttrs (old: {
