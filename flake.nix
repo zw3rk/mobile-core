@@ -85,7 +85,7 @@
                                      # For some reason building libiconv with nixpgks android setup produces
                                      # LANGINFO_CODESET to be found, which is not compatible with android sdk 23;
                                      # so we'll patch up iconv to not include that.
-                                     androidIconv = androidPkgs.libiconv.override { enableStatic = true; }).overrideAttrs (old: {
+                                     androidIconv = (androidPkgs.libiconv.override { enableStatic = true; }).overrideAttrs (old: {
                                       postConfigure = ''
                                         echo "#undef HAVE_LANGINFO_CODESET" >> libcharset/config.h
                                         echo "#undef HAVE_LANGINFO_CODESET" >> lib/config.h
