@@ -15,22 +15,22 @@
           name = "mobile-core";
           src = ./.;
         };
-        # This will package up all *.a in $out into a pkg.zip that can
-        # be downloaded from hydra.
-        withHydraLibPkg = pkg: pkg.overrideAttrs (old: {
-          postInstall = ''
-            mkdir -p $out/_pkg
-            find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
+      }); in
+      # This will package up all *.a in $out into a pkg.zip that can
+      # be downloaded from hydra.
+      let withHydraLibPkg = pkg: pkg.overrideAttrs (old: {
+        postInstall = ''
+          mkdir -p $out/_pkg
+          find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
 
-            (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
-            rm -fR $out/_pkg
+          (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+          rm -fR $out/_pkg
 
-            mkdir -p $out/nix-support
-            echo "file binary-dist \"$(echo $out/*.zip)\"" \
-                > $out/nix-support/hydra-build-products
-          '';
-        });
-      }; in
+          mkdir -p $out/nix-support
+          echo "file binary-dist \"$(echo $out/*.zip)\"" \
+              > $out/nix-support/hydra-build-products
+        '';
+      }); in
       # let mkPkg = drv: {
       # # drv.override { postInstall = ''
       #     # mkdir -p $out/
