@@ -105,11 +105,33 @@
                       postConfigure = ''
                         echo "#undef HAVE_MEMFD_CREATE" >> aarch64-unknown-linux-android/fficonfig.h
                       '';
+                      postInstall = ''
+                        mkdir -p $out/_pkg
+                        find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
+
+                        (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                        rm -fR $out/_pkg
+
+                        mkdir -p $out/nix-support
+                        echo "file binary-dist \"$(echo $out/*.zip)\"" \
+                           > $out/nix-support/hydra-build-products
+                      '';
                     });
                     # "aarch64-android:lib:gmp:static" = androidPkgs.gmp6.override { withStatic = true; };
                     "aarch64-android:lib:iconv:static" = (androidPkgs.libiconv.override { enableStatic = true; }).overrideAttrs (old: {
                       postConfigure = ''
                         echo "#undef HAVE_LANGINFO_CODESET" >> libcharset/config.h
+                      '';
+                      postInstall = ''
+                        mkdir -p $out/_pkg
+                        find $out/lib -name "*.a" -exec cp {} $out/_pkg \;
+
+                        (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                        rm -fR $out/_pkg
+
+                        mkdir -p $out/nix-support
+                        echo "file binary-dist \"$(echo $out/*.zip)\"" \
+                           > $out/nix-support/hydra-build-products
                       '';
                     });
                     "aarch64-android:lib:mobile-core" = (drv androidPkgs).mobile-core.components.library;
