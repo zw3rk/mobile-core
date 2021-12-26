@@ -121,6 +121,7 @@
                     "aarch64-android:lib:iconv:static" = (androidPkgs.libiconv.override { enableStatic = true; }).overrideAttrs (old: {
                       postConfigure = ''
                         echo "#undef HAVE_LANGINFO_CODESET" >> libcharset/config.h
+                        echo "#undef HAVE_LANGINFO_CODESET" >> lib/config.h
                       '';
                       postInstall = ''
                         mkdir -p $out/_pkg
