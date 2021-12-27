@@ -10,3 +10,5 @@ chello = newCString hello
 
 -- | Pristine haskell function.
 hello = "Hello from Haskell"
+
+{-# ANN module "This will trigger Template Haskell. Hooray!" #-}
