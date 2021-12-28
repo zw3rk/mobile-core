@@ -265,11 +265,11 @@
     },
     "nixpkgs-2111-patched": {
       "locked": {
-        "lastModified": 1640616004,
-        "narHash": "sha256-Pc/PU4JIDhW0VjM9ckkxdCuNGD35OAu9ydGlyvX/hLE=",
+        "lastModified": 1640660711,
+        "narHash": "sha256-PvoSbCctstLzG2fBELMGxPaWYnJIzXikpK0EpVMgZNA=",
         "owner": "angerman",
         "repo": "nixpkgs",
-        "rev": "b5ff36338a989d4a074669d986bd9b8697067538",
+        "rev": "c90f5f79200b48acd0a81eadfe5a3844f4afc92e",
         "type": "github"
       },
       "original": {
