@@ -201,11 +201,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1640167006,
-        "narHash": "sha256-GrQJjpNxG6NdN/DDOxVevVgT+23kWjd/Mzsj4Fn1x2E=",
+        "lastModified": 1641279380,
+        "narHash": "sha256-VqPJIIRohtAb6lH1I55H6Q1R1WasiyNCD5KXeWQNrkU=",
         "owner": "angerman",
         "repo": "nixpkgs",
-        "rev": "548cbebec880c675f885311050ca4157e7996efa",
+        "rev": "a46adb2c9f6514ebe1f2c4191e317405104dcd5a",
         "type": "github"
       },
       "original": {
