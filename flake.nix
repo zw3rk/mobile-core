@@ -3,7 +3,7 @@
   description = "Package build for mobile-core";
   inputs.nixpkgs.url = "github:angerman/nixpkgs/patch-1"; # based on 21.11
   inputs.haskellNix.url = "github:input-output-hk/haskell.nix/angerman/aarch64";
-  inputs.haskellNix.nixpkgs.follows = "nixpkgs";
+  inputs.haskellNix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   outputs = { self, haskellNix, nixpkgs, flake-utils }:
     let systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]; in
