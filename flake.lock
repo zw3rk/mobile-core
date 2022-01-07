@@ -146,17 +146,16 @@
         "nixpkgs-2003": "nixpkgs-2003",
         "nixpkgs-2105": "nixpkgs-2105",
         "nixpkgs-2111": "nixpkgs-2111",
-        "nixpkgs-2111-patched": "nixpkgs-2111-patched",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "old-ghc-nix": "old-ghc-nix",
         "stackage": "stackage"
       },
       "locked": {
-        "lastModified": 1641051052,
-        "narHash": "sha256-a3uQaTTl9iArCAHx/dMoCAakZyfGtFDycHaV6fgp9Pc=",
+        "lastModified": 1641457261,
+        "narHash": "sha256-KmHIxdKibJ0+ZgllmFPvhvQne9pioRU/D8PDKGNCSSk=",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "48fb111eda427931ce66a026b8c6f5256fb38e30",
+        "rev": "701b2a408a2fc1c7ed9d34342bfe613acd1be862",
         "type": "github"
       },
       "original": {
@@ -200,11 +199,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1641439918,
-        "narHash": "sha256-obGlEscAKSyr65zSLYRDVXwK+rceGvqcRKzpGWj0Ouk=",
+        "lastModified": 1641457028,
+        "narHash": "sha256-bA31xSpdSIo+rJMbHPurlxIsP/b6bbN+jvXOqyn2lR8=",
         "owner": "angerman",
         "repo": "nixpkgs",
-        "rev": "0e629de4ba4a43ad6e448b9bdd942e7a33898123",
+        "rev": "7b049e87e9b371f9ea6648aa8f1f2d17b2e31ae5",
         "type": "github"
       },
       "original": {
@@ -258,22 +257,6 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixpkgs-21.11-darwin",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-2111-patched": {
-      "locked": {
-        "lastModified": 1640660711,
-        "narHash": "sha256-PvoSbCctstLzG2fBELMGxPaWYnJIzXikpK0EpVMgZNA=",
-        "owner": "angerman",
-        "repo": "nixpkgs",
-        "rev": "c90f5f79200b48acd0a81eadfe5a3844f4afc92e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "angerman",
-        "ref": "patch-1",
         "repo": "nixpkgs",
         "type": "github"
       }
